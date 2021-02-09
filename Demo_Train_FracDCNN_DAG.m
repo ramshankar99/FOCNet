@@ -7,7 +7,7 @@ addpath('utilities');
 %-------------------------------------------------------------------------
 opts.learningRate     = [logspace(-3,-3,45) logspace(-3.5,-4,45)];% you can change the learning rate
 opts.batchSize        = 8; % 
-opts.gpus             = [1]; 
+opts.gpus             = []; 
 opts.numSubBatches    = 1;
 
 % solver

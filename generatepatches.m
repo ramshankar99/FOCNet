@@ -4,8 +4,8 @@ addpath('utilities');
 batchSize     = 8;        % batch size
 global CurTask
 if strcmpi(CurTask, 'Denoising')
-    folder    = 'Train_Set';  %
-%     folder    = 'BSD300';
+%     folder    = 'Train_Set';  %
+    folder    = 'BSDS300';
     stride    = 130;
     scales  = [1]; % scale the image to augment the training data
 else

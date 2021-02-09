@@ -6,18 +6,18 @@ addpath(fullfile('utilities'));
 folderModel = 'model';
 folderTest  = 'testsets';
 folderResult= 'results';
-imageSets   = {'BSD68','Set12','Set14','Urban100'}; % testing datasets
+imageSets   = {'BSDS100','Set14','Urban100'}; % testing datasets
 setTestCur  = imageSets{2};      % current testing dataset
 
 
 showresult  = 1;
-gpu         = 1;
+gpu         = 0;
 
 
 noiseSigma  = 50;
 CurTask = 'Denoising';
 % load model
-epoch       = 30;
+epoch       = 48;
 
 modelName   = ['FracDCNN' CurTask num2str(noiseSigma)];
 

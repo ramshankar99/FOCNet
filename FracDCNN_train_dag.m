@@ -78,6 +78,8 @@ if ~exist(opts.expDir, 'dir'), mkdir(opts.expDir) ; end
 % end
 %
 % opts.train = find(imdb.set==1);
+[imdb] = generatepatches;
+opts.train = find(imdb.set==1);
 
 opts.continue = true;
 opts.prefetch = true;
@@ -547,8 +549,8 @@ switch CurTask
             input(:,:,:,ii) = imresize(imresize(label(:,:,:,ii), 1/noiselevel,'bicubic'), noiselevel, 'bicubic');
         end
 end
-input      = gpuArray(input);
-label      = gpuArray(label);
+% input      = gpuArray(input);
+% label      = gpuArray(label);
 inputs2    = {'input', input, 'label', label} ;
 
 
