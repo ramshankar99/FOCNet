@@ -6,11 +6,11 @@ addpath(fullfile('utilities'));
 folderModel = 'model';
 folderTest  = 'testsets';
 folderResult= 'results';
-imageSets   = {'BSDS100','Set14','Urban100'}; % testing datasets
-setTestCur  = imageSets{2};      % current testing dataset
+imageSets   = {'BSDS100','Set14','Urban100','DB1_A'}; % testing datasets
+setTestCur  = imageSets{4};      % current testing dataset
 
 
-showresult  = 1;
+showresult  = 0;
 gpu         = 0;
 
 
@@ -18,7 +18,6 @@ noiseSigma  = 50;
 CurTask = 'Denoising';
 % load model
 epoch       = 48;
-
 modelName   = ['FracDCNN' CurTask num2str(noiseSigma)];
 
 % case one: for the model in 'data/model'
@@ -26,8 +25,6 @@ modelName   = ['FracDCNN' CurTask num2str(noiseSigma)];
 
 % case two: for the model in 'utilities'
 load(fullfile('data\FracDCNNDenoising50\',[modelName,'-epoch-',num2str(epoch),'.mat']));
-
-
 
 
 net = dagnn.DagNN.loadobj(net) ;
@@ -78,7 +75,7 @@ for i = 1 : 2*length(filePaths)
     label = modcrop(label,8);
     
     % add additive Gaussian noise
-    randn('seed',0);
+    rand('seed', ceil(i/2));
     noise = noiseSigma/255.*randn(size(label));
     input = im2single(label) + single(noise);
     
@@ -92,16 +89,26 @@ for i = 1 : 2*length(filePaths)
     output = gather(squeeze(gather(net.vars(out1).value)));
 
     
-    
     % calculate PSNR and SSIM
     [PSNRCur, SSIMCur] = Cal_PSNRSSIM(label,im2uint8(output),0,0);
     if showresult
         imshow(cat(2,im2uint8(input),im2uint8(label),im2uint8(output)));
         title([filePaths(ii).name,'    ',num2str(PSNRCur,'%2.2f'),'dB','    ',num2str(SSIMCur,'%2.4f')])
-        imwrite(im2uint8(output), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), extCur] ));
+        imwrite(im2uint8(input), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), '_input', extCur] ));
+        imwrite(im2uint8(output), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), '_output', extCur] ));
         drawnow;
        pause(1)
     end
+    
+    if mod(i,2) == 0
+        imwrite(im2uint8(input), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), '_input', extCur] ));
+        imwrite(im2uint8(label), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), '_label', extCur] ));
+        imwrite(im2uint8(output), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), '_output', extCur] ));
+        disp("Image " + i/2 + " done")
+    else
+        imwrite(im2uint8(input), fullfile(folderResultCur, [nameCur, '_' int2str(noiseSigma),'_PSNR_',num2str(PSNRCur*100,'%4.0f'), '_noise', extCur] ));
+    end
+    
     PSNRs(ii) = PSNRCur;
     SSIMs(ii) = SSIMCur;
 end
