@@ -540,7 +540,7 @@ function [inputs2] = getDagNNBatch(imdb, batch,noiselevel)
 % -------------------------------------------------------------------------
 label      = imdb.labels(:,:,:,batch);
 label      = data_augmentation(label,randi(8));
-% input      = label + noiselevel/255*randn(size(label),'single');  % add AWGN with noise level noiselevel
+input      = label + noiselevel/255*randn(size(label),'single');  % add AWGN with noise level noiselevel
 % disp(input.size)
 input      = imdb.images(:,:,:,batch);
 % input      = gpuArray(input);
